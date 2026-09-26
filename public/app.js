@@ -76,6 +76,16 @@ function shouldAutoPlay() {
   );
 }
 
+function isIos() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function isInstalledPwa() {
+  return window.matchMedia?.("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+}
+
 function showTapGate(message) {
   if (message) els.status.textContent = message;
   els.tapGate.hidden = false;
@@ -359,7 +369,13 @@ async function scheduleMorningNotification() {
 
   if (!settings.notifyEnabled) {
     reg.active?.postMessage({ type: "clear-schedules" });
+    els.notifyHelp.textContent = "Notifiche disattivate.";
     return;
+  }
+
+  if (isIos() && !isInstalledPwa()) {
+    els.notifyHelp.textContent =
+      "Su iPhone installa prima l’app sulla Home: Condividi → Aggiungi alla schermata Home.";
   }
 
   if (Notification.permission !== "granted") {
@@ -388,6 +404,9 @@ async function scheduleMorningNotification() {
     minute: "2-digit",
   });
   els.notifyHelp.textContent = `Prossima notifica: ${label}.`;
+  if (isIos() && !isInstalledPwa()) {
+    els.notifyHelp.textContent += " Apri l’app dalla Home per mantenerla attiva.";
+  }
 }
 
 function carPlayPlayerUrl(voiceId = settings.voiceId) {
@@ -471,6 +490,16 @@ async function init() {
     scheduleMorningNotification().catch(console.error);
   }
 }
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && settings.notifyEnabled) {
+    scheduleMorningNotification().catch(console.error);
+  }
+});
+
+window.addEventListener("pageshow", () => {
+  if (settings.notifyEnabled) scheduleMorningNotification().catch(console.error);
+});
 
 els.playBtn.addEventListener("click", () => {
   if (!daily?.speakText) return;

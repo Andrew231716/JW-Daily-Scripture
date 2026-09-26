@@ -27,27 +27,27 @@
 
     <main class="stage guide">
       <section class="hero">
-        <h1 class="scripture" style="font-style: normal">Deve aprire l’MP3, non la pagina</h1>
+        <h1 class="scripture" style="font-style: normal">Siri legge la scrittura del giorno</h1>
         <p class="lede">
-          Se Siri apre la schermata con il pulsante <strong>Ascolta</strong>, iPhone ha bloccato
-          l’autoplay. Collega il comando direttamente al file audio neurale.
+          In CarPlay non chiedere di aprire la pagina web: usa un comando che apre direttamente
+          l’MP3 del giorno.
         </p>
       </section>
 
       <article class="reading">
         <ol class="steps">
-          <li>Comandi → il tuo comando → lascia <strong>solo</strong> «Apri URL».</li>
+          <li>In <strong>Comandi</strong> crea un comando con una sola azione: «Apri URL».</li>
           <li>App: <strong>Safari</strong> o <strong>Chrome</strong>.</li>
           <li>
             URL (Isabella):
             <code id="mp3Link">…</code>
             <button type="button" class="secondary compact" id="copyMp3">Copia</button>
           </li>
-          <li>Salva. Prova: «Ehi Siri, leggi scrittura del giorno».</li>
+          <li>Salva e assegna la frase: «Ehi Siri, leggi la scrittura del giorno».</li>
         </ol>
         <p class="source">
-          Deve aprirsi il player audio nativo e partire subito, senza toccare Ascolta. Per un’altra
-          voce cambia il parametro <code>voice=</code> (es. <code>it-IT-DiegoNeural</code>).
+          Il link apre direttamente il file audio del giorno. Per una voce diversa cambia il
+          parametro <code>voice=</code> (es. <code>it-IT-DiegoNeural</code>).
         </p>
         <p class="actions">
           <a class="primary link-btn" id="openMp3" href="#">Apri MP3 di prova</a>
