@@ -7,6 +7,10 @@
       "memory": 1024,
       "maxDuration": 60
     },
+    "api/push-cron.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
     "server.js": {
       "memory": 1024,
       "maxDuration": 60

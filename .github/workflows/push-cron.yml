@@ -1,0 +1,30 @@
+name: Daily push notifications
+
+on:
+  schedule:
+    - cron: "2-59/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: daily-push-notifications
+  cancel-in-progress: false
+
+jobs:
+  send-due-notifications:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Invoke production push scheduler
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="$(curl -fsS \
+            -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jw-daily-scripture-push" | jq -er '.value')"
+          curl -fsS --retry 2 --retry-delay 2 \
+            -H "Authorization: Bearer ${token}" \
+            "https://temporary-sonic-banjo-o0bhzmr.vercel.app/api/push-cron"

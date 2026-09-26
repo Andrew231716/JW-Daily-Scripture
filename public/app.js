@@ -42,6 +42,7 @@ let daily = null;
 let speaking = false;
 let audioEl = null;
 let neuralVoices = [];
+let pushConfigPromise = null;
 let settings = loadSettings();
 
 function loadSettings() {
@@ -122,7 +123,15 @@ async function loadNeuralVoices() {
         style: "Naturale",
         recommended: true,
       },
-      { id: "it-IT-DiegoNeural", name: "Diego", gender: "Uomo", style: "Naturale" },
+      { id: "it-IT-ElsaNeural", name: "Elsa", gender: "Donna", style: "Naturale, morbida" },
+      { id: "it-IT-DiegoNeural", name: "Diego", gender: "Uomo", style: "Naturale, calda" },
+      { id: "it-IT-GiuseppeNeural", name: "Giuseppe", gender: "Uomo", style: "Naturale, posata" },
+      {
+        id: "it-IT-GiuseppeMultilingualNeural",
+        name: "Giuseppe Multilingue",
+        gender: "Uomo",
+        style: "Naturale, internazionale",
+      },
     ];
   }
   populateVoiceSelect();
@@ -349,64 +358,111 @@ async function loadDaily() {
   return data;
 }
 
-function nextTriggerDate(hhmm) {
-  const [h, m] = hhmm.split(":").map(Number);
-  const when = new Date();
-  when.setSeconds(0, 0);
-  when.setHours(h, m, 0, 0);
-  if (when.getTime() <= Date.now() + 5000) {
-    when.setDate(when.getDate() + 1);
+function getPushConfig() {
+  if (!pushConfigPromise) {
+    pushConfigPromise = fetchJson("/api/push-config", 10000).catch((error) => {
+      pushConfigPromise = null;
+      throw error;
+    });
   }
-  return when;
+  return pushConfigPromise;
 }
 
-async function scheduleMorningNotification() {
+function decodeApplicationKey(value) {
+  const padding = "=".repeat((4 - (value.length % 4)) % 4);
+  const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
+  return Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+}
+
+async function scheduleMorningNotification({ permissionRequest = null } = {}) {
   const reg = await ensureSW();
   if (!reg) {
     els.notifyHelp.textContent = "Questo browser non supporta i service worker.";
-    return;
+    return false;
   }
 
   if (!settings.notifyEnabled) {
-    reg.active?.postMessage({ type: "clear-schedules" });
+    const subscription = await reg.pushManager?.getSubscription();
+    if (subscription) {
+      await fetch("/api/push-subscriptions", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscription: subscription.toJSON() }),
+      });
+      await subscription.unsubscribe();
+    }
     els.notifyHelp.textContent = "Notifiche disattivate.";
-    return;
+    return true;
   }
 
   if (isIos() && !isInstalledPwa()) {
     els.notifyHelp.textContent =
-      "Su iPhone installa prima l’app sulla Home: Condividi → Aggiungi alla schermata Home.";
+      "Su iPhone installa l’app sulla Home (Condividi → Aggiungi alla schermata Home), poi abilita le notifiche da lì.";
+    return false;
   }
 
-  if (Notification.permission !== "granted") {
-    const permission = await Notification.requestPermission();
+  if (!("Notification" in window) || !("PushManager" in window)) {
+    els.notifyHelp.textContent = "Questo browser non supporta le notifiche push.";
+    return false;
+  }
+
+  let config;
+  try {
+    config = await getPushConfig();
+  } catch {
+    els.notifyHelp.textContent = "Impossibile verificare la configurazione delle notifiche.";
+    return false;
+  }
+  if (!config.configured || !config.publicKey) {
+    els.notifyHelp.textContent =
+      "Notifiche giornaliere non configurate sul server. Contatta chi gestisce l’app.";
+    return false;
+  }
+
+  if (Notification.permission !== "granted" && permissionRequest) {
+    const permission = await permissionRequest;
     if (permission !== "granted") {
-      saveSettings({ notifyEnabled: false });
-      els.notifyEnabled.checked = false;
       els.notifyHelp.textContent =
         "Permesso notifiche negato. Puoi riattivarlo dalle impostazioni del browser.";
-      return;
+      return false;
     }
   }
+  if (Notification.permission !== "granted") {
+    els.notifyHelp.textContent = "Consenti le notifiche e salva di nuovo l’orario impostato.";
+    return false;
+  }
 
-  const when = nextTriggerDate(settings.notifyTime);
-  reg.active?.postMessage({
-    type: "schedule",
-    when: when.getTime(),
-    title: "JW Daily Scripture",
-    body: "Tocca per ascoltare la scrittura di oggi",
-    notifyTime: settings.notifyTime,
+  let subscription = await reg.pushManager.getSubscription();
+  if (!subscription && !permissionRequest && Notification.permission !== "granted") {
+    els.notifyHelp.textContent = "Salva di nuovo le impostazioni per registrare questo dispositivo.";
+    return false;
+  }
+  if (!subscription) {
+    subscription = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: decodeApplicationKey(config.publicKey),
+    });
+  }
+
+  const response = await fetch("/api/push-subscriptions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      subscription: subscription.toJSON(),
+      notifyTime: settings.notifyTime,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    }),
   });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
 
-  const label = when.toLocaleString("it-IT", {
+  const next = new Date(result.nextAt).toLocaleString("it-IT", {
     weekday: "short",
     hour: "2-digit",
     minute: "2-digit",
   });
-  els.notifyHelp.textContent = `Prossima notifica: ${label}.`;
-  if (isIos() && !isInstalledPwa()) {
-    els.notifyHelp.textContent += " Apri l’app dalla Home per mantenerla attiva.";
-  }
+  els.notifyHelp.textContent = `Notifica push attiva. Prossimo invio: ${next}.`;
+  return true;
 }
 
 function carPlayPlayerUrl(voiceId = settings.voiceId) {
@@ -419,7 +475,7 @@ function refreshSiriLink() {
   if (els.siriLink) els.siriLink.value = carPlayPlayerUrl(voiceId);
   if (els.siriHelp) {
     els.siriHelp.textContent =
-      "Comandi: solo «Apri URL» (Safari/Chrome) con questo link MP3. Parte da sola con voce neurale (anche CarPlay).";
+      "Comandi: URL → Ottieni contenuto di URL → Riproduci suono. Riproduce l’MP3 sulla sorgente audio attiva, anche con CarPlay.";
   }
 }
 
@@ -465,6 +521,7 @@ async function fetchJson(url, timeoutMs = 15000) {
 }
 
 async function init() {
+  getPushConfig().catch(() => {});
   try {
     await loadNeuralVoices();
   } catch (error) {
@@ -576,6 +633,12 @@ els.copySiriLinkBtn.addEventListener("click", async () => {
 
 els.settingsForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const canRequestPermission =
+    els.notifyEnabled.checked &&
+    "Notification" in window &&
+    Notification.permission !== "granted" &&
+    !(isIos() && !isInstalledPwa());
+  const permissionRequest = canRequestPermission ? Notification.requestPermission() : null;
   saveSettings({
     notifyTime: els.notifyTime.value || "07:00",
     autoPlay: els.autoPlay.checked,
@@ -586,7 +649,17 @@ els.settingsForm.addEventListener("submit", async (event) => {
     rate: Number(els.rate.value) || 1,
   });
   refreshSiriLink();
-  await scheduleMorningNotification();
+  let notificationsReady = false;
+  try {
+    notificationsReady = await scheduleMorningNotification({ permissionRequest });
+  } catch (error) {
+    console.error(error);
+    els.notifyHelp.textContent = `Impossibile attivare le notifiche: ${error.message || error}`;
+  }
+  if (settings.notifyEnabled && !notificationsReady) {
+    saveSettings({ notifyEnabled: false });
+    els.notifyEnabled.checked = false;
+  }
   closeSettings();
 });
 
@@ -597,10 +670,10 @@ els.testNotifyBtn.addEventListener("click", async () => {
     const permission = await Notification.requestPermission();
     if (permission !== "granted") return;
   }
-  reg.active?.postMessage({
-    type: "notify-now",
-    title: "JW Daily Scripture — prova",
+  await reg.showNotification("JW Daily Scripture — prova", {
     body: "Tocca per aprire e ascoltare la scrittura del giorno",
+    icon: "/icons/icon-192.svg",
+    data: { url: "/?play=1&source=notification" },
   });
 });
 

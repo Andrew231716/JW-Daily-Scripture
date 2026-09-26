@@ -29,28 +29,30 @@
       <section class="hero">
         <h1 class="scripture" style="font-style: normal">Siri legge la scrittura del giorno</h1>
         <p class="lede">
-          In CarPlay non chiedere di aprire la pagina web: usa un comando che apre direttamente
-          l’MP3 del giorno.
+          La scorciatoia scarica l’MP3 del giorno e lo riproduce sull’uscita audio attiva, inclusa
+          quella di CarPlay.
         </p>
       </section>
 
       <article class="reading">
         <ol class="steps">
-          <li>In <strong>Comandi</strong> crea un comando con una sola azione: «Apri URL».</li>
-          <li>App: <strong>Safari</strong> o <strong>Chrome</strong>.</li>
+          <li>In <strong>Comandi</strong> crea un nuovo comando personale.</li>
           <li>
-            URL (Isabella):
+            Aggiungi l’azione <strong>URL</strong> e incolla questo indirizzo (voce Isabella):
             <code id="mp3Link">…</code>
             <button type="button" class="secondary compact" id="copyMp3">Copia</button>
           </li>
+          <li>Aggiungi <strong>Ottieni contenuto di URL</strong> con metodo GET.</li>
+          <li>Aggiungi <strong>Riproduci suono</strong> usando il risultato dell’azione precedente.</li>
           <li>Salva e assegna la frase: «Ehi Siri, leggi la scrittura del giorno».</li>
         </ol>
         <p class="source">
-          Il link apre direttamente il file audio del giorno. Per una voce diversa cambia il
+          Non usare «Apri URL»: apre il browser. Con CarPlay collegato, prova la frase assegnata; la
+          lettura viene riprodotta tramite l’uscita audio attiva. Per una voce diversa cambia il
           parametro <code>voice=</code> (es. <code>it-IT-DiegoNeural</code>).
         </p>
         <p class="actions">
-          <a class="primary link-btn" id="openMp3" href="#">Apri MP3 di prova</a>
+          <a class="primary link-btn" id="openMp3" href="#">Prova MP3</a>
           <a class="ghost link-btn" href="/">Torna all’app</a>
         </p>
       </article>

@@ -4,11 +4,18 @@ const { fetchDailyText } = require("./lib/dailyText");
 const { synthesizeSpeech } = require("./lib/tts");
 const { ITALIAN_NEURAL_VOICES, DEFAULT_VOICE, resolveVoice } = require("./lib/voices");
 const { sendMp3 } = require("./lib/sendMp3");
+const pushConfigHandler = require("./api/push-config");
+const pushSubscriptionsHandler = require("./api/push-subscriptions");
+const pushCronHandler = require("./api/push-cron");
 
 const PORT = process.env.PORT || 3847;
 const app = express();
 const publicDir = path.join(__dirname, "public");
 const audioCache = new Map();
+
+app.get("/api/push-config", pushConfigHandler);
+app.all("/api/push-subscriptions", express.json(), pushSubscriptionsHandler);
+app.all("/api/push-cron", pushCronHandler);
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true, service: "jw-daily-scripture" });
