@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#799fcc" />
+    <meta name="description" content="Notifica mattutina e lettura automatica del testo del giorno da wol.jw.org." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="JW Daily Scripture" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>JW Daily Scripture</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;0,600;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="chrome-bar">
+      <div class="top">
+        <div class="brand-wrap">
+          <div class="brand-mark" aria-hidden="true">
+            <img src="/icons/mark.svg" alt="" />
+          </div>
+          <div>
+            <p class="brand">JW Daily Scripture</p>
+            <p class="brand-sub">Testo del giorno · wol.jw.org</p>
+          </div>
+        </div>
+        <button type="button" class="ghost" id="settingsBtn" aria-label="Impostazioni">
+          Impostazioni
+        </button>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="hero" id="hero">
+        <p class="eyebrow" id="dateLabel">Caricamento…</p>
+        <h1 class="scripture" id="scripture">Sto preparando la scrittura del giorno</h1>
+        <p class="lede" id="status">
+          Lettura automatica del testo del giorno da Watchtower Online Library — gratis.
+        </p>
+        <div class="actions">
+          <button type="button" class="primary" id="playBtn" disabled>Ascolta</button>
+          <button type="button" class="secondary" id="stopBtn" hidden>Ferma</button>
+        </div>
+      </section>
+
+      <article class="reading" id="reading" hidden>
+        <p class="body" id="bodyText"></p>
+        <p class="source">
+          Fonte:
+          <a id="sourceLink" href="https://wol.jw.org/it/wol/h/r6/lp-i" target="_blank" rel="noopener"
+            >wol.jw.org</a
+          >
+        </p>
+      </article>
+
+      <p class="site-note">Lettore personale non ufficiale · contenuto da wol.jw.org</p>
+    </main>
+
+    <div class="sheet" id="settingsDialog" hidden>
+      <div class="sheet-panel">
+        <form class="sheet-inner" id="settingsForm">
+          <div class="sheet-head">
+            <h2>Impostazioni</h2>
+            <button type="button" class="ghost sheet-x" id="closeSettingsBtn" aria-label="Chiudi">
+              Chiudi
+            </button>
+          </div>
+          <p class="hint">
+            Attiva le notifiche e scegli una voce naturale. Il link Siri userà la stessa voce.
+          </p>
+
+          <label class="field">
+            <span>Ora della notifica</span>
+            <input type="time" id="notifyTime" value="07:00" required />
+          </label>
+
+          <label class="check">
+            <input type="checkbox" id="autoPlay" checked />
+            <span>Avvia automaticamente la lettura all’apertura dalla notifica</span>
+          </label>
+
+          <label class="check">
+            <input type="checkbox" id="notifyEnabled" />
+            <span>Abilita notifiche giornaliere</span>
+          </label>
+
+          <label class="field">
+            <span>Voce naturale (gratuita)</span>
+            <select id="voiceSelect">
+              <option value="it-IT-IsabellaNeural">Isabella — naturale (consigliata)</option>
+            </select>
+          </label>
+
+          <div class="sheet-actions">
+            <button type="button" class="secondary" id="previewVoiceBtn">Anteprima voce</button>
+          </div>
+
+          <label class="field">
+            <span>Velocità (solo voci del dispositivo)</span>
+            <input type="range" id="rate" min="0.8" max="1.2" step="0.05" value="1" />
+          </label>
+
+          <label class="check">
+            <input type="checkbox" id="useDeviceVoice" />
+            <span>Usa voci del telefono invece di quelle neurali</span>
+          </label>
+
+          <div class="sheet-actions">
+            <button type="submit" class="primary" value="save">Salva</button>
+            <button type="button" class="secondary" id="testNotifyBtn">Prova notifica</button>
+          </div>
+
+          <p class="fineprint" id="notifyHelp">
+            Su telefono: aggiungi JW Daily Scripture alla Home per notifiche più affidabili.
+          </p>
+
+          <hr class="divider" />
+
+          <h2>Hey Siri + CarPlay (voci neurali)</h2>
+          <p class="hint">
+            Usa <strong>Apri URL</strong> (Safari/Chrome) sul link MP3 qui sotto. Non usare la
+            pagina play: iPhone blocca l’audio automatico nelle pagine web.
+          </p>
+          <label class="field">
+            <span>Link MP3 neurale (Siri / CarPlay)</span>
+            <input type="text" id="siriLink" readonly />
+          </label>
+          <div class="sheet-actions">
+            <button type="button" class="secondary" id="copySiriLinkBtn">Copia link MP3</button>
+            <a class="secondary link-btn" id="openSiriGuideBtn" href="/siri.html">Guida</a>
+          </div>
+          <p class="fineprint" id="siriHelp">
+            Una sola azione: Apri URL → questo link. Cambia voce sopra e ricopia.
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <div class="tap-gate" id="tapGate" hidden>
+      <button type="button" class="primary tap-gate-btn" id="tapGateBtn">
+        Tocca per ascoltare
+      </button>
+      <p>Siri ha aperto JW Daily Scripture: un tocco avvia la lettura.</p>
+    </div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

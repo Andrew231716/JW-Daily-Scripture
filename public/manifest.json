@@ -1,0 +1,35 @@
+{
+  "name": "JW Daily Scripture",
+  "short_name": "JW Scripture",
+  "description": "Notifica mattutina e lettura ad alta voce del testo del giorno da wol.jw.org.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f2f1ef",
+  "theme_color": "#799fcc",
+  "lang": "it",
+  "shortcuts": [
+    {
+      "name": "Leggi scrittura del giorno",
+      "short_name": "Leggi",
+      "description": "Apre JW Daily Scripture e legge il testo del giorno",
+      "url": "/?play=1&source=shortcut",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#799fcc" />
+    <title>Siri + CarPlay — voci neurali</title>
+    <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="chrome-bar">
+      <div class="top">
+        <div class="brand-wrap">
+          <div class="brand-mark" aria-hidden="true"><img src="/icons/mark.svg" alt="" /></div>
+          <div>
+            <p class="brand">JW Daily Scripture</p>
+            <p class="brand-sub">Autoplay voce neurale</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="stage guide">
+      <section class="hero">
+        <h1 class="scripture" style="font-style: normal">Deve aprire l’MP3, non la pagina</h1>
+        <p class="lede">
+          Se Siri apre la schermata con il pulsante <strong>Ascolta</strong>, iPhone ha bloccato
+          l’autoplay. Collega il comando direttamente al file audio neurale.
+        </p>
+      </section>
+
+      <article class="reading">
+        <ol class="steps">
+          <li>Comandi → il tuo comando → lascia <strong>solo</strong> «Apri URL».</li>
+          <li>App: <strong>Safari</strong> o <strong>Chrome</strong>.</li>
+          <li>
+            URL (Isabella):
+            <code id="mp3Link">…</code>
+            <button type="button" class="secondary compact" id="copyMp3">Copia</button>
+          </li>
+          <li>Salva. Prova: «Ehi Siri, leggi scrittura del giorno».</li>
+        </ol>
+        <p class="source">
+          Deve aprirsi il player audio nativo e partire subito, senza toccare Ascolta. Per un’altra
+          voce cambia il parametro <code>voice=</code> (es. <code>it-IT-DiegoNeural</code>).
+        </p>
+        <p class="actions">
+          <a class="primary link-btn" id="openMp3" href="#">Apri MP3 di prova</a>
+          <a class="ghost link-btn" href="/">Torna all’app</a>
+        </p>
+      </article>
+    </main>
+    <script>
+      const url = `${location.origin}/api/daily-audio?voice=it-IT-IsabellaNeural`;
+      document.getElementById("mp3Link").textContent = url;
+      document.getElementById("openMp3").href = url;
+      document.getElementById("copyMp3").onclick = async () => {
+        const btn = document.getElementById("copyMp3");
+        try {
+          await navigator.clipboard.writeText(url);
+          btn.textContent = "Copiato";
+        } catch {
+          btn.textContent = "Seleziona e copia";
+        }
+      };
+    </script>
+  </body>
+</html>

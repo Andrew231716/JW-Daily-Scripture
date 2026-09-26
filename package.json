@@ -1,0 +1,18 @@
+{
+  "name": "jw-daily-scripture",
+  "version": "1.2.6",
+  "description": "JW Daily Scripture \u2014 PWA gratuita: notifica mattutina e lettura del testo del giorno (wol.jw.org)",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "deploy": "npx vercel deploy --prod --yes"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "msedge-tts": "^2.0.7"
+  }
+}

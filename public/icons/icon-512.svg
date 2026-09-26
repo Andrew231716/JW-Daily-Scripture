@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="JW Daily Scripture">
+  <rect width="512" height="512" rx="108" fill="#4a6da7"/>
+  <path d="M64 148c65-9 117-30 163-57 8-5 18-5 26 0 46 27 98 48 163 57v247c-67-11-121-33-165-60-8-5-19-5-27 0-44 27-98 49-165 60V148z" fill="#d9e6f7"/>
+  <path d="M253 91c-46 27-98 48-163 57v247c67-11 121-33 165-60 4-2.5 7-6.5 7-11V102c0-4.5-3-8.5-7-11z" fill="#fff"/>
+  <path d="M259 91c46 27 98 48 163 57v247c-67-11-121-33-165-60-4-2.5-7-6.5-7-11V102c0-4.5 3-8.5 7-11z" fill="#f4f8fd"/>
+  <path d="M256 96v224" stroke="#799fcc" stroke-width="14" stroke-linecap="round"/>
+  <path d="M233 96h46v112l-23-17-23 17V96z" fill="#345996"/>
+  <path d="M128 192h76M128 230h64M128 268h76" stroke="#4a6da7" stroke-width="13" stroke-linecap="round"/>
+  <path d="M308 192h76M320 230h64M308 268h76" stroke="#4a6da7" stroke-width="13" stroke-linecap="round"/>
+</svg>

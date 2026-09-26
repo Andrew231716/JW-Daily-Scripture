@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#4a6da7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>JW Daily Scripture — Ascolto</title>
+    <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      .player-wrap {
+        min-height: 70vh;
+        display: grid;
+        align-content: center;
+        gap: 1rem;
+      }
+      .player-wrap audio {
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="chrome-bar">
+      <div class="top">
+        <div class="brand-wrap">
+          <div class="brand-mark" aria-hidden="true"><img src="/icons/mark.svg" alt="" /></div>
+          <div>
+            <p class="brand">JW Daily Scripture</p>
+            <p class="brand-sub">Voce neurale · CarPlay</p>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="stage">
+      <section class="hero player-wrap">
+        <p class="eyebrow" id="dateLabel">Caricamento…</p>
+        <h1 class="scripture" id="scripture">Preparazione lettura</h1>
+        <p class="lede" id="status">Avvio della voce neurale…</p>
+        <div class="actions">
+          <button type="button" class="primary" id="playBtn">Ascolta</button>
+          <button type="button" class="secondary" id="stopBtn" hidden>Ferma</button>
+        </div>
+        <audio id="audio" controls playsinline></audio>
+      </section>
+    </main>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const voice = params.get("voice") || "it-IT-IsabellaNeural";
+      const audio = document.getElementById("audio");
+      const playBtn = document.getElementById("playBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const status = document.getElementById("status");
+      const dateLabel = document.getElementById("dateLabel");
+      const scripture = document.getElementById("scripture");
+
+      async function boot() {
+        try {
+          const daily = await fetch("/api/daily-text", { cache: "no-store" }).then((r) => r.json());
+          dateLabel.textContent = daily.title || "Oggi";
+          scripture.textContent = daily.scripture || "Scrittura del giorno";
+          const src = `/api/daily-audio?voice=${encodeURIComponent(voice)}&t=${Date.now()}`;
+          const res = await fetch(src, { cache: "no-store" });
+          if (!res.ok) throw new Error(`Audio HTTP ${res.status}`);
+          const blob = await res.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          audio.src = objectUrl;
+          if ("mediaSession" in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+              title: daily.scripture || "Scrittura del giorno",
+              artist: "JW Daily Scripture",
+              album: daily.title || "Testo del giorno",
+              artwork: [
+                { src: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+                { src: "/icons/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
+              ],
+            });
+            navigator.mediaSession.setActionHandler("play", () => audio.play());
+            navigator.mediaSession.setActionHandler("pause", () => audio.pause());
+            navigator.mediaSession.setActionHandler("stop", () => {
+              audio.pause();
+              audio.currentTime = 0;
+            });
+          }
+          status.textContent = `Voce neurale: ${voice.replace("it-IT-", "").replace("Neural", "")}`;
+          try {
+            await audio.play();
+            playBtn.hidden = true;
+            stopBtn.hidden = false;
+            status.textContent = "In lettura (voce neurale). Su CarPlay usa i comandi media.";
+          } catch {
+            status.textContent = "Tocca Ascolta per avviare la voce neurale in auto.";
+          }
+        } catch (error) {
+          status.textContent = String(error.message || error);
+        }
+      }
+
+      playBtn.addEventListener("click", async () => {
+        try {
+          await audio.play();
+          playBtn.hidden = true;
+          stopBtn.hidden = false;
+        } catch (error) {
+          status.textContent = String(error.message || error);
+        }
+      });
+      stopBtn.addEventListener("click", () => {
+        audio.pause();
+        audio.currentTime = 0;
+        stopBtn.hidden = true;
+        playBtn.hidden = false;
+      });
+      audio.addEventListener("ended", () => {
+        stopBtn.hidden = true;
+        playBtn.hidden = false;
+        status.textContent = "Lettura completata.";
+      });
+      boot();
+    </script>
+  </body>
+</html>

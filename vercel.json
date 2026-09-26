@@ -1,0 +1,25 @@
+{
+  "rewrites": [
+    { "source": "/siri", "destination": "/api/siri" }
+  ],
+  "functions": {
+    "api/daily-audio.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "server.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+    },
+    {
+      "source": "/play.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    }
+  ]
+}
