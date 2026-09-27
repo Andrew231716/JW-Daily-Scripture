@@ -9,6 +9,6 @@ module.exports = async function handler(_req, res) {
     defaultVoice: DEFAULT_VOICE,
     voices: ITALIAN_NEURAL_VOICES,
     siriHint:
-      "In Comandi usa URL → Ottieni contenuto di URL → Riproduci suono con /api/daily-audio?voice=ID_VOCE.",
+      "Per Siri usa URL → Ottieni contenuto di URL → Pronuncia testo con /api/daily-speak.",
   });
 };

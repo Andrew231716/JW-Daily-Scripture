@@ -466,8 +466,7 @@ async function scheduleMorningNotification({ permissionRequest = null } = {}) {
 }
 
 function carPlayPlayerUrl(voiceId = settings.voiceId) {
-  // Direct MP3: Safari/Chrome start playback automatically (web pages are blocked without a tap).
-  return `${location.origin}/api/daily-audio?voice=${encodeURIComponent(voiceId || "it-IT-IsabellaNeural")}`;
+  return `${location.origin}/api/daily-speak`;
 }
 
 function refreshSiriLink() {
@@ -475,7 +474,7 @@ function refreshSiriLink() {
   if (els.siriLink) els.siriLink.value = carPlayPlayerUrl(voiceId);
   if (els.siriHelp) {
     els.siriHelp.textContent =
-      "Comandi: URL → Ottieni contenuto di URL → Riproduci suono. Riproduce l’MP3 sulla sorgente audio attiva, anche con CarPlay.";
+      "Comandi: URL → Ottieni contenuto di URL → Pronuncia testo. Siri legge sulla sorgente audio attiva, anche con CarPlay.";
   }
 }
 

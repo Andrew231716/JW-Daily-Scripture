@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#799fcc" />
-    <title>Siri + CarPlay — voci neurali</title>
+    <title>Siri + CarPlay — lettura diretta</title>
     <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap"
@@ -19,7 +19,7 @@
           <div class="brand-mark" aria-hidden="true"><img src="/icons/mark.svg" alt="" /></div>
           <div>
             <p class="brand">JW Daily Scripture</p>
-            <p class="brand-sub">Autoplay voce neurale</p>
+            <p class="brand-sub">Lettura diretta con Siri</p>
           </div>
         </div>
       </div>
@@ -29,8 +29,8 @@
       <section class="hero">
         <h1 class="scripture" style="font-style: normal">Siri legge la scrittura del giorno</h1>
         <p class="lede">
-          La scorciatoia scarica l’MP3 del giorno e lo riproduce sull’uscita audio attiva, inclusa
-          quella di CarPlay.
+          La scorciatoia recupera il testo del giorno e lo fa leggere direttamente a Siri,
+          anche sull’uscita audio di CarPlay.
         </p>
       </section>
 
@@ -38,31 +38,31 @@
         <ol class="steps">
           <li>In <strong>Comandi</strong> crea un nuovo comando personale.</li>
           <li>
-            Aggiungi l’azione <strong>URL</strong> e incolla questo indirizzo (voce Isabella):
-            <code id="mp3Link">…</code>
-            <button type="button" class="secondary compact" id="copyMp3">Copia</button>
+            <li>Aggiungi l’azione <strong>URL</strong> e incolla questo indirizzo:
+              <code id="speakLink">…</code>
+              <button type="button" class="secondary compact" id="copySpeak">Copia</button>
           </li>
           <li>Aggiungi <strong>Ottieni contenuto di URL</strong> con metodo GET.</li>
-          <li>Aggiungi <strong>Riproduci suono</strong> usando il risultato dell’azione precedente.</li>
+            <li>Aggiungi <strong>Pronuncia testo</strong> usando il risultato dell’azione precedente.</li>
           <li>Salva e assegna la frase: «Ehi Siri, leggi la scrittura del giorno».</li>
         </ol>
         <p class="source">
-          Non usare «Apri URL»: apre il browser. Con CarPlay collegato, prova la frase assegnata; la
-          lettura viene riprodotta tramite l’uscita audio attiva. Per una voce diversa cambia il
-          parametro <code>voice=</code> (es. <code>it-IT-DiegoNeural</code>).
+            Non usare «Apri URL» né «Riproduci suono»: il testo viene letto dall’azione nativa di Siri.
+            Con CarPlay collegato, la voce segue l’uscita audio attiva. Per fermare la lettura usa il
+            comando media di CarPlay.
         </p>
         <p class="actions">
-          <a class="primary link-btn" id="openMp3" href="#">Prova MP3</a>
+            <a class="primary link-btn" id="openSpeak" href="#">Prova testo</a>
           <a class="ghost link-btn" href="/">Torna all’app</a>
         </p>
       </article>
     </main>
     <script>
-      const url = `${location.origin}/api/daily-audio?voice=it-IT-IsabellaNeural`;
-      document.getElementById("mp3Link").textContent = url;
-      document.getElementById("openMp3").href = url;
-      document.getElementById("copyMp3").onclick = async () => {
-        const btn = document.getElementById("copyMp3");
+      const url = `${location.origin}/api/daily-speak`;
+      document.getElementById("speakLink").textContent = url;
+      document.getElementById("openSpeak").href = url;
+      document.getElementById("copySpeak").onclick = async () => {
+        const btn = document.getElementById("copySpeak");
         try {
           await navigator.clipboard.writeText(url);
           btn.textContent = "Copiato";

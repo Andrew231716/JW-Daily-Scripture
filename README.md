@@ -36,7 +36,8 @@ Apri `http://localhost:3847`.
 ## Hey Siri — «leggi scrittura del giorno»
 
 1. Apri `/siri.html` sull’URL pubblico
-2. In **Comandi** crea **Apri URL** → `…/siri`
+2. In **Comandi** crea: **URL** → `Ottieni contenuto di URL` → `Pronuncia testo`
+	usando `…/api/daily-speak`
 3. **Aggiungi a Siri** → frase `leggi scrittura del giorno`
 
 ## Nota sul contenuto
