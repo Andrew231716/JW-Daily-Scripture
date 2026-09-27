@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/siri", "destination": "/api/siri" }
+    { "source": "/siri", "destination": "/api/siri" },
+    { "source": "/google", "destination": "/api/google" }
   ],
   "functions": {
     "api/daily-audio.js": {

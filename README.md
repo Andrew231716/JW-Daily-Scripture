@@ -40,6 +40,13 @@ Apri `http://localhost:3847`.
    → `Pronuncia testo`, usando `…/api/daily-speak`. Elimina eventuali azioni `Riproduci suono`.
 3. **Aggiungi a Siri** → frase `leggi scrittura del giorno`
 
+## Hey Google — Android Auto
+
+Apri `/google.html` sull’URL pubblico e crea una routine Google Assistant con la frase
+`leggi la scrittura del giorno` e l’azione per aprire il link audio `/api/google`. Collega Android
+Auto prima di usare il comando. Android Auto non consente a un normale sito web di comparire come
+app multimediale nativa; la guida indica il percorso supportato dalla routine Google.
+
 ## Nota sul contenuto
 
 Il testo del giorno appartiene a Watch Tower Bible and Tract Society. JW Daily Scripture è un lettore personale non ufficiale.

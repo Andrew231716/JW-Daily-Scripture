@@ -16,6 +16,13 @@
       "description": "Apre JW Daily Scripture e legge il testo del giorno",
       "url": "/?play=1&source=shortcut",
       "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Guida Hey Google",
+      "short_name": "Hey Google",
+      "description": "Configura la lettura con Google Assistant e Android Auto",
+      "url": "/google.html",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
     }
   ],
   "icons": [

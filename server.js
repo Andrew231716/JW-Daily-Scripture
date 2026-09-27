@@ -97,6 +97,11 @@ app.get("/siri", (req, res) => {
   res.redirect(302, "/api/daily-speak");
 });
 
+app.get("/google", (req, res) => {
+  const voice = resolveVoice(req.query.voice || DEFAULT_VOICE);
+  res.redirect(302, `/api/daily-audio?voice=${encodeURIComponent(voice)}`);
+});
+
 app.use(express.static(publicDir, { maxAge: "1h" }));
 
 app.get("*", (_req, res) => {

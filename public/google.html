@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#799fcc" />
+    <title>Hey Google + Android Auto</title>
+    <link rel="icon" href="/icons/icon-192.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="chrome-bar">
+      <div class="top">
+        <div class="brand-wrap">
+          <div class="brand-mark" aria-hidden="true"><img src="/icons/mark.svg" alt="" /></div>
+          <div>
+            <p class="brand">JW Daily Scripture</p>
+            <p class="brand-sub">Hey Google · Android Auto</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="stage guide">
+      <section class="hero">
+        <h1 class="scripture" style="font-style: normal">Hey Google legge la scrittura del giorno</h1>
+        <p class="lede">
+          Usa il link audio diretto in una routine Google Assistant. Con Android Auto, l’audio segue
+          l’uscita multimediale dell’auto.
+        </p>
+      </section>
+
+      <article class="reading">
+        <ol class="steps">
+          <li>Apri l’app <strong>Google Home</strong> e crea una routine personale.</li>
+          <li>Imposta come comando vocale: <strong>leggi la scrittura del giorno</strong>.</li>
+          <li>Aggiungi l’azione per <strong>aprire un sito web</strong> usando questo URL audio:</li>
+          <li>
+            <code id="googleLink">…</code>
+            <button type="button" class="secondary compact" id="copyGoogle">Copia</button>
+          </li>
+          <li>Salva la routine e prova: <strong>Hey Google, leggi la scrittura del giorno</strong>.</li>
+        </ol>
+        <p class="source">
+          In auto collega Android Auto prima di usare il comando. Se Google apre Chrome invece di
+          riprodurre l’audio, avvia il link una volta dal telefono e seleziona l’uscita Bluetooth o
+          Android Auto. Il browser non può aggiungere automaticamente un’app web all’interfaccia
+          Android Auto.
+        </p>
+        <p class="actions">
+          <a class="primary link-btn" id="openGoogle" href="#">Prova audio</a>
+          <a class="ghost link-btn" href="/">Torna all’app</a>
+        </p>
+      </article>
+    </main>
+    <script>
+      const url = `${location.origin}/api/google?voice=it-IT-IsabellaNeural`;
+      document.getElementById("googleLink").textContent = url;
+      document.getElementById("openGoogle").href = url;
+      document.getElementById("copyGoogle").onclick = async () => {
+        const button = document.getElementById("copyGoogle");
+        try {
+          await navigator.clipboard.writeText(url);
+          button.textContent = "Copiato";
+        } catch {
+          button.textContent = "Seleziona e copia";
+        }
+      };
+    </script>
+  </body>
+</html>
