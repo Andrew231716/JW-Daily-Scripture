@@ -37,22 +37,22 @@
       <article class="reading">
         <ol class="steps">
           <li>In <strong>Comandi</strong> crea un nuovo comando personale.</li>
-          <li>
-            <li>Aggiungi l’azione <strong>URL</strong> e incolla questo indirizzo:
-              <code id="speakLink">…</code>
-              <button type="button" class="secondary compact" id="copySpeak">Copia</button>
+          <li>Aggiungi l’azione <strong>URL</strong> e incolla questo indirizzo:
+            <code id="speakLink">…</code>
+            <button type="button" class="secondary compact" id="copySpeak">Copia</button>
           </li>
           <li>Aggiungi <strong>Ottieni contenuto di URL</strong> con metodo GET.</li>
-            <li>Aggiungi <strong>Pronuncia testo</strong> usando il risultato dell’azione precedente.</li>
+          <li>Aggiungi <strong>Ottieni testo dall’input</strong> usando il risultato precedente.</li>
+          <li>Aggiungi <strong>Pronuncia testo</strong> usando il risultato di “Ottieni testo dall’input”.</li>
           <li>Salva e assegna la frase: «Ehi Siri, leggi la scrittura del giorno».</li>
         </ol>
         <p class="source">
-            Non usare «Apri URL» né «Riproduci suono»: il testo viene letto dall’azione nativa di Siri.
-            Con CarPlay collegato, la voce segue l’uscita audio attiva. Per fermare la lettura usa il
-            comando media di CarPlay.
+          Elimina eventuali azioni «Riproduci suono» o «Apri URL» rimaste nella scorciatoia
+          precedente: possono produrre solo un suono o interrompere la lettura. Con CarPlay
+          collegato, la voce segue l’uscita audio attiva.
         </p>
         <p class="actions">
-            <a class="primary link-btn" id="openSpeak" href="#">Prova testo</a>
+          <a class="primary link-btn" id="openSpeak" href="#">Prova testo</a>
           <a class="ghost link-btn" href="/">Torna all’app</a>
         </p>
       </article>

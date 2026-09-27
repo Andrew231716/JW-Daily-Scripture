@@ -474,7 +474,7 @@ function refreshSiriLink() {
   if (els.siriLink) els.siriLink.value = carPlayPlayerUrl(voiceId);
   if (els.siriHelp) {
     els.siriHelp.textContent =
-      "Comandi: URL → Ottieni contenuto di URL → Pronuncia testo. Siri legge sulla sorgente audio attiva, anche con CarPlay.";
+      "Comandi: URL → Ottieni contenuto di URL → Ottieni testo dall’input → Pronuncia testo. Elimina Riproduci suono: Siri legge sulla sorgente audio attiva, anche con CarPlay.";
   }
 }
 
